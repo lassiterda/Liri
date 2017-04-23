@@ -14,21 +14,29 @@ const keys = require('./keys');
 
       if(e) {
         console.log(e);
+        appLog([e]);
       }
       else if (objBody.Response === "False") {
         movieThis("Mr Nobody");
       }
       else {
-        console.log("Title: " +  objBody.Title)
-        console.log("year: " + objBody.Year)
-        console.log("Rating (IMDB): " + objBody.imdbRating)
-        console.log("Country: " + objBody.Country)
-        console.log("Laguage: " + objBody.Language)
-        console.log("Plot: " + objBody.Plot)
-        console.log("Actors: " + objBody.Actors)
-        console.log("Rotten Tomatoes Rating: " + objBody.tomatoRating)
-        console.log("Rotten Tomatoes URL: " + objBody.tomatoURL)
-        console.log("body")
+        let arrResults = [
+          "Title: " +  objBody.Title,
+          "Year: " + objBody.Year,
+          "Rating (IMDB): " + objBody.imdbRating,
+          "Country: " + objBody.Country,
+          "Laguage: " + objBody.Language,
+          "Plot: " + objBody.Plot,
+          "Actors: " + objBody.Actors,
+          "Rotten Tomatoes Rating: " + objBody.tomatoRating,
+          "Rotten Tomatoes URL: " + objBody.tomatoURL
+        ]
+
+        appLog(arrResults);
+        arrResults.forEach(function(ele) {
+          console.log(ele)
+        })
+
       }
     });
 
@@ -38,15 +46,21 @@ const keys = require('./keys');
     spotify.search({ type: 'track', query: str }, function(e, response) {
       if (e) {
         console.log(e);
+        appLog([e]);
       }
       else {
         let firstResult = response.tracks.items[0];
-
-        console.log("")
-        console.log(firstResult.artists[0].name);
-        console.log(firstResult.name);
-        console.log(firstResult.preview_url);
-        console.log(firstResult.album.name);
+        let arrResults = [
+          "",
+          firstResult.artists[0].name,
+          firstResult.name,
+          firstResult.preview_url,
+          firstResult.album.name
+        ];
+        appLog(arrResults);
+        arrResults.forEach(function(ele) {
+          console.log(ele)
+        });
       }
     });
   };
@@ -58,15 +72,33 @@ const keys = require('./keys');
                   };
 
     client.get("/statuses/user_timeline", params, function(e, tweets, resp) {
-        console.log("");
+
         tweets.forEach(function(ele) {
-          console.log(ele.text)
-          console.log(ele.created_at);
-          console.log("-----------")
-          console.log("");
+          let arrResults = [
+            "",
+            ele.text,
+            ele.created_at,
+            "-----------"
+          ]
+          appLog(arrResults);
+          arrResults.forEach(function(ele) {
+            console.log(ele);
+          })
         })
     });
   };
+  //function to log results of functions to the console, takes an array of strings.
+  var appLog = function(arr) {
+    let args = "";
+    for(i = 2; i < process.argv.length; i++) {
+      args += process.argv[i] + " "
+    }
+    fs.appendFileSync("./log.txt","\r\n" + args + "\r\n")
+    arr.forEach(function(ele) {
+      fs.appendFileSync("./log.txt", ele + "\r\n")
+    })
+    fs.appendFileSync("./log.txt", "-----------\r\n")
+  }
 
 //switch case to determine output
 function caseSwitch(command, term) {
